@@ -1,10 +1,4 @@
-# CSC415-Assignment-5
-
-**Assignment 5 – Buffered I/O**
-
-Welcome to your next homework assignment.  
-
-**NOTE:** The GitHub due date is the CUTOFF time and **not** the actual due date. See Canvas for the actual due date.
+**Buffered I/O**
 
 **Assignment Purpose and Learning Outcomes:**
 - Advanced buffering techniques
@@ -16,43 +10,14 @@ Welcome to your next homework assignment.
 - Memory management
 - Learning to understand existing code
 
-**Let me remind you of the general expectations for all projects:** 
-- All projects are done in C in the Ubuntu Linux Virtual Machine.
-- Code must be neat, with proper and consistent indentation and well documented. 
-- Keep line to around 80 characters per line, and not line greater than 100 characters.
-- Comments must describe the logic and reason for the code and not repeat the code.  
-- Variables must have meaningful names and be in a consistent format (I do not care if you use camelCase or under_scores in variables but be consistent.
-- You must use `make` to compile the program.
-- You must use `make run` (sometimes with RUNOPTIONS) to execute the program.
-- In addition, each file must have the standard header as defined below.
-- All source files and writeup must be in the main branch of the github.
-  
-All primary filenames should be `<lastname>_<firstname>_HW<#>_<component>.<proper extension>`, except Makefile.
 
 Each .c and .h file must have a standard header as defined below.  Make sure to put in your section number (replace the #), your name, your student ID, a proper project name, GitHub name, filename, and description of the project.  Do not alter the number of asterisks and ensure that the header starts on line 1 of the file.
-
-```
-/**************************************************************
-* Class::  CSC-415-0# Spring 2024
-* Name::
-* Student ID::
-* GitHub-Name::
-* Project:: Assignment 5 – Buffered I/O read
-*
-* File:: <name of this file>
-*
-* Description::
-*
-**************************************************************/
-```
-
-This is an INDIVIDUAL assignment.  You can (and should) work in groups to research how to do the assignment, but each person must code their own version and make their own submission.
 
 This assignment is to get you to handle buffered IO where you do the buffering.  
 
 You will see in this assignment that you may question why you are doing operations the way specified here in the assignment.  This is because we are writing a buffering I/O.  We will see later in file system project how important this is.
 
-You are to create a set of routines in a file called `b_io.c`, skeleton of this file is provided.  The prototypes for these functions are in a file called `b_io.h` (provided).  The Makefile is supplied and you should set your FIRSTNAME and LASTNAME. (*make no other changes to the Makefile*)
+You are to create a set of routines in a file called `b_io.c`, skeleton of this file is provided.  The prototypes for these functions are in a file called `b_io.h` (provided). 
 
 You will be just writing three functions in `b_io.c`
 
@@ -95,16 +60,3 @@ We have read 1877 characters from file CommonSense.txt
 You should submit your source code file(s) and Makefile, along with a writeup in PDF format using the writeup template that includes a description of what you did, show me the logic and steps you define to complete this project and the compilation and execution output from your program in GitHub, and the PDF also in Canvas.  There is no Analysis section needed for this assignment.
 
 The ONLY files you will modify is the `Makefile` and `b_io.c` (you will not be creating any new files)
-
-
-Rubric
-| Grade Item                                   | Grade Points                                  |
-|:---------------------------------------------|----------------------------------------------:|
-| Standard Header                              |   2                                           |
-| Proper open and malloc                       |  15                                           |
-| Proper tracking and implementation of read   |  20                                           |
-| Proper buffering                             |  25                                           |
-| Proper implementation of close and free      |   5                                           |
-| Correct Output                               |  10                                           |
-| Code Comments                                |  10                                           |
-| Writeup                                      |  13 (Description, Compilation, Sample Output) |
