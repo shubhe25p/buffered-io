@@ -112,59 +112,62 @@ int b_read (b_io_fd fd, char * buffer, int count)
 	int numBlockToBeRead = fcbArray[fd].fi->fileSize / B_CHUNK_SIZE;
 
 	if(sizeof(fcbArray[fd].cache)==0 && count < B_CHUNK_SIZE){
-		int numBlockRead = LBAread(fcbArray[fd].cache, 1, indexOfNextBlockInFile);
+		int numBlockRead = LBAread(fcbArray[fd].cache, 1, fcbArray[fd].indexOfNextBlockInFile);
 		memcpy(buffer, fcbArray[fd].cache, count);
 		fcbArray[fd].indexOfNextBlockInFile++;
 		fcbArray[fd].indexOfNextCacheRead+=count;
 	}
 	else if(sizeof(fcbArray[fd].cache)==0 && count >= B_CHUNK_SIZE){
 		
-		int numBlockRead = LBAread(buffer, numBlockToBeRead, indexOfNextBlockInFile);
+		int numBlockRead = LBAread(buffer, numBlockToBeRead, fcbArray[fd].indexOfNextBlockInFile);
 		fcbArray[fd].indexOfNextBlockInFile+=numBlockRead;
 		if(numBytesLeftToBeReadAtEnd > 0){
-			int extraBlockRead = LBAread(fcbArray[fd].cache, 1, indexOfNextBlockInFile);
+			int extraBlockRead = LBAread(fcbArray[fd].cache, 1, fcbArray[fd].indexOfNextBlockInFile);
 			memcpy(buffer + numBlockRead*B_CHUNK_SIZE, fcbArray[fd].cache, numBytesLeftToBeReadAtEnd);
 			fcbArray[fd].indexOfNextBlockInFile++;
 			fcbArray[fd].indexOfNextCacheRead+=numBytesLeftToBeReadAtEnd;
 		}
 	}
-	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - indexOfNextCacheRead)>=count && count < B_CHUNK_SIZE){
-		memcpy(buffer, fcbArray[fd].cache+indexOfNextCacheRead, count);
+	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead)>=count && count < B_CHUNK_SIZE){
+		memcpy(buffer, fcbArray[fd].cache+fcbArray[fd].indexOfNextCacheRead, count);
 		fcbArray[fd].indexOfNextCacheRead+=count;
 	}
-	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - indexOfNextCacheRead)<count && count < B_CHUNK_SIZE){
-		memcpy(buffer, fcbArray[fd].cache+indexOfNextCacheRead, B_CHUNK_SIZE - indexOfNextCacheRead);
-		int numBlockRead = LBAread(fcbArray[fd].cache, 1, indexOfNextBlockInFile);
-		memcpy(buffer + B_CHUNK_SIZE - indexOfNextCacheRead, fcbArray[fd].cache, count - (B_CHUNK_SIZE - indexOfNextCacheRead));
+	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead)<count && count < B_CHUNK_SIZE){
+		memcpy(buffer, fcbArray[fd].cache+fcbArray[fd].indexOfNextCacheRead, B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead);
+		int numBlockRead = LBAread(fcbArray[fd].cache, 1, fcbArray[fd].indexOfNextBlockInFile);
+		memcpy(buffer + B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead, fcbArray[fd].cache, count - (B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead));
 		fcbArray[fd].indexOfNextBlockInFile++;
-		fcbArray[fd].indexOfNextCacheRead=(count - (B_CHUNK_SIZE + indexOfNextCacheRead));
+		fcbArray[fd].indexOfNextCacheRead=(count - (B_CHUNK_SIZE + fcbArray[fd].indexOfNextCacheRead));
 	}
-	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - indexOfNextCacheRead)<count && count >= B_CHUNK_SIZE){
-		memcpy(buffer, fcbArray[fd].cache+indexOfNextCacheRead, B_CHUNK_SIZE - indexOfNextCacheRead);
-		numBytesLeftToBeReadAtEnd = count - (B_CHUNK_SIZE - indexOfNextCacheRead);
+	else if(sizeof(fcbArray[fd].cache)!=0 && (B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead)<count && count >= B_CHUNK_SIZE){
+		memcpy(buffer, fcbArray[fd].cache+fcbArray[fd].indexOfNextCacheRead, B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead);
+		numBytesLeftToBeReadAtEnd = count - (B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead);
 		if(numBytesLeftToBeReadAtEnd < B_CHUNK_SIZE){
-			int numBlockRead = LBAread(fcbArray[fd].cache, 1, indexOfNextBlockInFile);
-			memcpy(buffer + B_CHUNK_SIZE - indexOfNextCacheRead, fcbArray[fd].cache, count - (B_CHUNK_SIZE - indexOfNextCacheRead));
+			int numBlockRead = LBAread(fcbArray[fd].cache, 1, fcbArray[fd].indexOfNextBlockInFile);
+			memcpy(buffer + B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead, fcbArray[fd].cache, numBytesLeftToBeReadAtEnd);
 			fcbArray[fd].indexOfNextBlockInFile++;
-			fcbArray[fd].indexOfNextCacheRead=(count - (B_CHUNK_SIZE + indexOfNextCacheRead));
+			fcbArray[fd].indexOfNextCacheRead=numBytesLeftToBeReadAtEnd;
 		}
 		else{
 
 			numBlockToBeRead = numBytesLeftToBeReadAtEnd / B_CHUNK_SIZE;
 			numBytesLeftToBeReadAtEnd = numBytesLeftToBeReadAtEnd % B_CHUNK_SIZE;
-			int numBlockRead = LBAread(buffer+B_CHUNK_SIZE - indexOfNextCacheRead, numBlockToBeRead, indexOfNextBlockInFile);
+			int numBlockRead = LBAread(buffer+B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead, numBlockToBeRead, fcbArray[fd].indexOfNextBlockInFile);
 			fcbArray[fd].indexOfNextBlockInFile+=numBlockRead;
 			
 			if(numBytesLeftToBeReadAtEnd > 0){
 
-			int extraBlockRead = LBAread(fcbArray[fd].cache, 1, indexOfNextBlockInFile);
-			memcpy(buffer + numBlockRead*B_CHUNK_SIZE+B_CHUNK_SIZE - indexOfNextCacheRead, fcbArray[fd].cache, numBytesLeftToBeReadAtEnd);
+			int extraBlockRead = LBAread(fcbArray[fd].cache, 1, fcbArray[fd].indexOfNextBlockInFile);
+			memcpy(buffer + numBlockRead*B_CHUNK_SIZE+B_CHUNK_SIZE - fcbArray[fd].indexOfNextCacheRead, fcbArray[fd].cache, numBytesLeftToBeReadAtEnd);
 			fcbArray[fd].indexOfNextBlockInFile++;
-			fcbArray[fd].indexOfNextCacheRead+=numBytesLeftToBeReadAtEnd;
+			fcbArray[fd].indexOfNextCacheRead=numBytesLeftToBeReadAtEnd;
 		}
 
 		}
 
+	}
+	else{
+		return count;
 	}
 	return count; //eof not tracked yet
 	}
